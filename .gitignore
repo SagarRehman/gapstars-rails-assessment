@@ -42,3 +42,13 @@
 
 # Collection of various scripts
 /sandbox
+/log/*
+/tmp/*
+/storage/*
+/coverage
+/.byebug_history
+/db/.sqlite3
+/node_modules
+/yarn-error.log
+/vendor/bundle
+.DS_Store
