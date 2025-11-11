@@ -1,7 +1,5 @@
 require "csv"
-
 class CompanyImporter
-  # path_or_io: File, String (path), or ActionDispatch::Http::UploadedFile
   def initialize(path_or_io)
     @io =
       case path_or_io
@@ -10,16 +8,14 @@ class CompanyImporter
       else path_or_io # uploaded file responds to #read
       end
   end
-
   def call
     rows = []
-    CSV.new(@io, headers: true).each do |row|
-      name = row["name"]&.strip || row["company_name"]&.strip
-      city = row["city"]&.strip
-      coc  = row["coc_number"]&.strip || row["registry_number"]&.strip
-
-      next if name.blank? || city.blank? || coc.blank?
-
+    csv = CSV.new(@io, headers: true, col_sep: sniff_col_sep)
+    csv.each do |row|
+      name = (row["name"] || row["company_name"]).to_s.strip
+      city = row["city"].to_s.strip
+      coc  = (row["coc_number"] || row["registry_number"]).to_s.strip
+      next if name.empty? || city.empty? || coc.empty?
       now = Time.current
       rows << {
         name: name,
@@ -31,13 +27,19 @@ class CompanyImporter
         updated_at: now
       }
     end
-
-    # Upsert by unique index; "keep last result" satisfied by last row wins
+    return 0 if rows.empty?
     Company.upsert_all(
       rows,
-      unique_by: :index_companies_on_coc_number # matches migration index name
-    )
+      unique_by: :index_companies_on_coc_number
+    ).rows.count
   ensure
     @io.close if @io.respond_to?(:close)
+  end
+  private
+  def sniff_col_sep
+    @io.rewind
+    sample = @io.read(2048).to_s
+    @io.rewind
+    sample.count(";") > sample.count(",") ? ";" : ","
   end
 end
