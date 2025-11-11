@@ -1,0 +1,24 @@
+<%= turbo_frame_tag "results" do %>
+  <% if companies.blank? %>
+    <div class="text-muted">No matches.</div>
+  <% else %>
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>City</th>
+          <th>CoC #</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% companies.each do |c| %>
+          <tr>
+            <td><%= c.name %></td>
+            <td><%= c.city %></td>
+            <td><code><%= c.coc_number %></code></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>

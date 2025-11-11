@@ -1,14 +1,16 @@
-<p style="color: green"><%= notice %></p>
+<div class="container py-5">
+  <h1 class="mb-4">Company Search</h1>
+  <div data-controller="search" data-search-url-value="<%= search_companies_path %>">
+    <input type="text"
+           class="form-control form-control-lg"
+           placeholder="Type name, city, or CoC number…"
+           data-action="input->search#query"
+           autofocus>
+  </div>
 
-<h1>Companies</h1>
-
-<div id="companies">
-  <% @companies.each do |company| %>
-    <%= render company %>
-    <p>
-      <%= link_to "Show this company", company %>
-    </p>
-  <% end %>
+  <div class="mt-4">
+    <%= turbo_frame_tag "results" do %>
+      <div class="text-muted">Start typing to see results…</div>
+    <% end %>
+  </div>
 </div>
-
-<%= link_to "New company", new_company_path %>
