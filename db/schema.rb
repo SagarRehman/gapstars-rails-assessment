@@ -10,5 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 0) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_11_214959) do
+  create_table "companies", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "city", null: false
+    t.string "coc_number", null: false
+    t.string "name_lc", null: false
+    t.string "city_lc", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city_lc"], name: "index_companies_on_city_lc"
+    t.index ["coc_number"], name: "index_companies_on_coc_number", unique: true
+    t.index ["name_lc"], name: "index_companies_on_name_lc"
+    t.check_constraint "length(trim(coc_number)) > 0", name: "companies_coc_present"
+  end
+
 end
