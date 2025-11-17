@@ -32,8 +32,7 @@ export default class extends Controller {
     } catch (e) {
       // optional: show a simple error message in the results frame
       const frame = document.querySelector("turbo-frame#results")
-      if (frame) frame.innerHTML = <div class="text-danger">Search failed.</div>
-      // console.error(e)
+      if (frame) frame.innerHTML = `<div class="text-danger">Search failed.</div>`
     }
   }
 }
